@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 4
+    url: jdbc:mysql://fnx6frzmhxw45qcb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com/tfuucyqb781hib04
+    username: ykkaxkop9z0ea2q6
+    password: lgdy26e415wo1kxk
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+spring.jpa:
+  hibernate.ddl-auto: update
+  properties.hibernate.format_sql: true
+  show-sql: true
+
+jwt:
+  secret-key: fast-campus.simple_sns_2022_secret_key
+  # 30 days
+  token.expired-time-ms: 2592000000
