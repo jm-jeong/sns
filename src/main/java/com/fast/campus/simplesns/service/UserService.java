@@ -12,7 +12,7 @@ import com.fast.campus.simplesns.exception.ErrorCode;
 import com.fast.campus.simplesns.exception.SimpleSnsApplicationException;
 import com.fast.campus.simplesns.model.UserDto;
 import com.fast.campus.simplesns.model.entity.UserEntity;
-import com.fast.campus.simplesns.repository.UserRepository;
+import com.fast.campus.simplesns.repository.UserEntityRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UserService implements UserDetailsService {
 
-	private final UserRepository userRepository;
+	private final UserEntityRepository userEntityRepository;
 	private final BCryptPasswordEncoder encoder;
 
 	@Value("${jwt.secret-key}")
@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findByUserName(username).map(UserDto::fromEntity).orElseThrow(
+		return userEntityRepository.findByUserName(username).map(UserDto::fromEntity).orElseThrow(
 			() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", username))
 		);
 	}
@@ -46,13 +46,13 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public UserDto join(String username, String password) {
-		userRepository.findByUserName(username).ifPresent(
+		userEntityRepository.findByUserName(username).ifPresent(
 			it -> {
 				throw new SimpleSnsApplicationException(ErrorCode.DUPLICATED_USER_NAME,
 					String.format("userName is %s", username));
 			});
 
-		UserEntity savedUser = userRepository.save(UserEntity.of(username, encoder.encode(password)));
+		UserEntity savedUser = userEntityRepository.save(UserEntity.of(username, encoder.encode(password)));
 		return UserDto.fromEntity(savedUser);
 	}
 }
