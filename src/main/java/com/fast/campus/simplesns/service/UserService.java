@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
 	private final UserEntityRepository userEntityRepository;
 	private final BCryptPasswordEncoder encoder;
@@ -29,7 +29,6 @@ public class UserService implements UserDetailsService {
 	@Value("${jwt.token.expired-time-ms}")
 	private Long expiredTimeMs;
 
-	@Override
 	public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userEntityRepository.findByUserName(username).map(UserDto::fromEntity).orElseThrow(
 			() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", username))
