@@ -94,6 +94,6 @@ public class UserServiceTest {
 		SimpleSnsApplicationException exception = Assertions.assertThrows(SimpleSnsApplicationException.class,
 			() -> userService.join(userName, password));
 
-		Assertions.assertEquals(ErrorCode.DUPLICATE_USERNAME, exception.getErrorCode());
+		Assertions.assertEquals(ErrorCode.DUPLICATED_USER_NAME, exception.getErrorCode());
 	}
 }

@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
 	public UserDto join(String username, String password) {
 		userRepository.findByUserName(username).ifPresent(
 			it -> {
-				throw new SimpleSnsApplicationException(ErrorCode.DUPLICATE_USERNAME,
+				throw new SimpleSnsApplicationException(ErrorCode.DUPLICATED_USER_NAME,
 					String.format("userName is %s", username));
 			});
 

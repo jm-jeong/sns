@@ -58,14 +58,14 @@ public class UserControllerTest {
 		String username = "testName";
 		String password = "testPassword";
 		when(userService.join(username, password)).thenThrow(
-			new SimpleSnsApplicationException(ErrorCode.DUPLICATE_USERNAME));
+			new SimpleSnsApplicationException(ErrorCode.DUPLICATED_USER_NAME));
 
 		mockMvc.perform(post("/api/v1/users/join")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsBytes(new UserJoinRequest("testName", "testPassword")))
 			)
 			.andDo(print())
-			.andExpect(status().is(ErrorCode.DUPLICATE_USERNAME.getStatus().value()));
+			.andExpect(status().is(ErrorCode.DUPLICATED_USER_NAME.getStatus().value()));
 	}
 
 	@Test

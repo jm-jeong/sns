@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fast.campus.simplesns.configuration.filter.JwtTokenFilter;
+import com.fast.campus.simplesns.exception.CustomAuthenticationEntryPoint;
 import com.fast.campus.simplesns.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,22 +36,25 @@ public class AuthenticationConfiguration extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring()
 			.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg",
-				"/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js", "/manifest.json")
+				"/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js", "/manifest.json", "/static/**")
 			.antMatchers("/resources/**")
-			.antMatchers(HttpMethod.POST, "/api/*/users/join", "/api/*/users/login");
+			.antMatchers(HttpMethod.POST, "/api/*/users/join", "/api/*/users/login")
+			.antMatchers(HttpMethod.GET, "/post", "/authentication/sign-in", "/authentication/sign-up",
+				"/my-post", "/feed");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeRequests()
-			.anyRequest().authenticated()
+			.antMatchers("/api/**").authenticated()
 			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
+			.exceptionHandling()
+			.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+			.and()
 			.addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class);
-
-
 	}
 }
