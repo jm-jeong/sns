@@ -15,7 +15,7 @@ import com.fast.campus.simplesns.exception.ErrorCode;
 import com.fast.campus.simplesns.exception.SimpleSnsApplicationException;
 import com.fast.campus.simplesns.fixture.UserEntityFixture;
 import com.fast.campus.simplesns.model.entity.UserEntity;
-import com.fast.campus.simplesns.repository.UserRepository;
+import com.fast.campus.simplesns.repository.UserEntityRepository;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -24,7 +24,7 @@ public class UserServiceTest {
 	UserService userService;
 
 	@MockBean
-	UserRepository userRepository;
+	UserEntityRepository userEntityRepository;
 
 	@MockBean
 	BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -35,7 +35,7 @@ public class UserServiceTest {
 		String password = "password";
 		UserEntity user = UserEntityFixture.get(username, password);
 
-		when(userRepository.findByUserName(username)).thenReturn(Optional.of(user));
+		when(userEntityRepository.findByUserName(username)).thenReturn(Optional.of(user));
 		when(bCryptPasswordEncoder.matches(password, user.getPassword())).thenReturn(true);
 
 		Assertions.assertDoesNotThrow(() -> userService.login(username, password));
@@ -46,7 +46,7 @@ public class UserServiceTest {
 		String userName = "name";
 		String password = "password";
 
-		when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
+		when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.empty());
 
 
 		SimpleSnsApplicationException exception = Assertions.assertThrows(SimpleSnsApplicationException.class
@@ -62,7 +62,7 @@ public class UserServiceTest {
 		String password = "password";
 		String wrongPassword = "password1";
 
-		when(userRepository.findByUserName(userName)).thenReturn(Optional.of(UserEntityFixture.get(userName, wrongPassword)));
+		when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(UserEntityFixture.get(userName, wrongPassword)));
 		when(bCryptPasswordEncoder.matches(password, wrongPassword)).thenReturn(false);
 
 		SimpleSnsApplicationException exception = Assertions.assertThrows(SimpleSnsApplicationException.class
@@ -76,9 +76,9 @@ public class UserServiceTest {
 		String userName = "name";
 		String password = "password";
 
-		when(userRepository.findByUserName(userName)).thenReturn(Optional.empty());
+		when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.empty());
 		when(bCryptPasswordEncoder.encode(password)).thenReturn("password_encrypt");
-		when(userRepository.save(any())).thenReturn(Optional.of(UserEntityFixture.get(userName, "password_encrypt")));
+		when(userEntityRepository.save(any())).thenReturn(Optional.of(UserEntityFixture.get(userName, "password_encrypt")));
 
 		Assertions.assertDoesNotThrow(() -> userService.join(userName, password));
 	}
@@ -89,7 +89,7 @@ public class UserServiceTest {
 		String userName = "name";
 		String password = "password";
 
-		when(userRepository.findByUserName(userName)).thenReturn(Optional.of(UserEntityFixture.get(userName, password)));
+		when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(UserEntityFixture.get(userName, password)));
 
 		SimpleSnsApplicationException exception = Assertions.assertThrows(SimpleSnsApplicationException.class,
 			() -> userService.join(userName, password));
