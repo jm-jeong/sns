@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fast.campus.simplesns.JwtTokenUtils;
 import com.fast.campus.simplesns.exception.ErrorCode;
@@ -43,6 +44,7 @@ public class UserService implements UserDetailsService {
 		return JwtTokenUtils.generateAccessToken(username, secretKey, expiredTimeMs);
 	}
 
+	@Transactional
 	public UserDto join(String username, String password) {
 		userRepository.findByUserName(username).ifPresent(
 			it -> {
