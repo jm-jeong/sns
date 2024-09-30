@@ -11,6 +11,9 @@ spring.jpa:
   hibernate.ddl-auto: update
   properties.hibernate.format_sql: true
   show-sql: true
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL8Dialect
 
 jwt:
   secret-key: fast-campus.simple_sns_2022_secret_key
