@@ -1,5 +1,7 @@
 package com.fast.campus.simplesns.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fast.campus.simplesns.controller.request.UserLoginRequest;
+import com.fast.campus.simplesns.controller.response.AlarmResponse;
 import com.fast.campus.simplesns.controller.response.Response;
 import com.fast.campus.simplesns.controller.response.UserJoinResponse;
 import com.fast.campus.simplesns.controller.request.UserJoinRequest;
@@ -38,5 +41,10 @@ public class UserController {
 	@GetMapping("/me")
 	public Response<UserJoinResponse> me(Authentication authentication) {
 		return Response.success(UserJoinResponse.fromUserDto(userService.loadUserByUsername(authentication.getName())));
+	}
+
+	@GetMapping("/alarm")
+	public Response<Page<AlarmResponse>> alarm(Pageable pageable, Authentication authentication) {
+		return Response.success(userService.alarmList(authentication.getName(), pageable).map(AlarmResponse::fromAlarm));
 	}
 }
