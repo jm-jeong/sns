@@ -17,6 +17,7 @@ import com.fast.campus.simplesns.controller.request.UserJoinRequest;
 import com.fast.campus.simplesns.controller.response.UserLoginResponse;
 import com.fast.campus.simplesns.model.UserDto;
 import com.fast.campus.simplesns.service.UserService;
+import com.fast.campus.simplesns.utils.ClassUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +46,7 @@ public class UserController {
 
 	@GetMapping("/alarm")
 	public Response<Page<AlarmResponse>> alarm(Pageable pageable, Authentication authentication) {
-		return Response.success(userService.alarmList(authentication.getName(), pageable).map(AlarmResponse::fromAlarm));
+		UserDto user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), UserDto.class);
+		return Response.success(userService.alarmList(user.getId(), pageable).map(AlarmResponse::fromAlarm));
 	}
 }

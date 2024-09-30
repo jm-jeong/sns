@@ -13,7 +13,6 @@ import lombok.Getter;
 public class AlarmDto {
 	private Integer id = null;
 
-	private UserDto user;
 
 	private AlarmType alarmType;
 
@@ -32,7 +31,6 @@ public class AlarmDto {
 	public static AlarmDto fromEntity(AlarmEntity entity) {
 		return new AlarmDto(
 			entity.getId(),
-			UserDto.fromEntity(entity.getUser()),
 			entity.getAlarmType(),
 			entity.getArgs(),
 			entity.getRegisteredAt(),

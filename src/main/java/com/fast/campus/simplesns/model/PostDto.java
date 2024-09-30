@@ -21,6 +21,7 @@ public class PostDto {
 
 	private UserDto user;
 
+
 	private LocalDateTime registeredAt;
 
 	private LocalDateTime updatedAt;

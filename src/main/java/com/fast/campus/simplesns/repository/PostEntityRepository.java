@@ -10,5 +10,5 @@ import com.fast.campus.simplesns.model.entity.UserEntity;
 
 public interface PostEntityRepository extends JpaRepository<PostEntity, Integer> {
 
-	Page<PostEntity> findAllByUser(UserEntity userEntity, Pageable pageable);
+	Page<PostEntity> findAllByUserId(Integer userId, Pageable pageable);
 }

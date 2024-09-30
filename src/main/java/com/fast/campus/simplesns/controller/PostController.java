@@ -17,7 +17,9 @@ import com.fast.campus.simplesns.controller.request.PostWriteRequest;
 import com.fast.campus.simplesns.controller.response.CommentResponse;
 import com.fast.campus.simplesns.controller.response.PostResponse;
 import com.fast.campus.simplesns.controller.response.Response;
+import com.fast.campus.simplesns.model.UserDto;
 import com.fast.campus.simplesns.service.PostService;
+import com.fast.campus.simplesns.utils.ClassUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -42,20 +44,23 @@ public class PostController {
 
 	@GetMapping("/my")
 	public Response<Page<PostResponse>> myPosts(Pageable pageable, Authentication authentication) {
-		return Response.success(postService.my(authentication.getName(), pageable).map(PostResponse::fromPostDto));
+		UserDto user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), UserDto.class);
+		return Response.success(postService.my(user.getId(), pageable).map(PostResponse::fromPostDto));
 	}
 
 	@PutMapping("/{postId}")
 	public Response<PostResponse> modify(@PathVariable Integer postId, @RequestBody PostWriteRequest request,
 		Authentication authentication) {
+		UserDto user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), UserDto.class);
 		return Response.success(
-			PostResponse.fromPostDto(postService.modify(authentication.getName(), postId, request.getTitle(),
+			PostResponse.fromPostDto(postService.modify(user.getId(), postId, request.getTitle(),
 				request.getBody())));
 	}
 
 	@DeleteMapping("/{postId}")
 	public Response<Void> delete(@PathVariable Integer postId, Authentication authentication) {
-		postService.delete(authentication.getName(), postId);
+		UserDto user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), UserDto.class);
+		postService.delete(user.getId(), postId);
 		return Response.success();
 	}
 

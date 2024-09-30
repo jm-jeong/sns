@@ -8,9 +8,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
@@ -33,7 +35,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
-@Table(name = "alarm")
+@Table(name = "\"alarm\"", indexes = {
+	@Index(name = "user_id_idx", columnList = "user_id")
+})
 @TypeDef(name = "json", typeClass = JsonType.class)
 @SQLDelete(sql = "UPDATE alarm SET removed_at = NOW() WHERE id=?")
 @Where(clause = "removed_at is NULL")
@@ -43,7 +47,7 @@ public class AlarmEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 
