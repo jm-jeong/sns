@@ -1,6 +1,8 @@
 package com.fast.campus.simplesns.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fast.campus.simplesns.JwtTokenUtils;
 import com.fast.campus.simplesns.exception.ErrorCode;
 import com.fast.campus.simplesns.exception.SimpleSnsApplicationException;
+import com.fast.campus.simplesns.model.AlarmDto;
 import com.fast.campus.simplesns.model.UserDto;
 import com.fast.campus.simplesns.model.entity.UserEntity;
+import com.fast.campus.simplesns.repository.AlarmEntityRepository;
 import com.fast.campus.simplesns.repository.UserEntityRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserEntityRepository userEntityRepository;
+	private final AlarmEntityRepository alarmEntityRepository;
 	private final BCryptPasswordEncoder encoder;
 
 	@Value("${jwt.secret-key}")
@@ -53,5 +58,13 @@ public class UserService {
 
 		UserEntity savedUser = userEntityRepository.save(UserEntity.of(username, encoder.encode(password)));
 		return UserDto.fromEntity(savedUser);
+	}
+
+	@Transactional
+	public Page<AlarmDto> alarmList(String username, Pageable pageable) {
+		UserEntity user = userEntityRepository.findByUserName(username).orElseThrow(
+			() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", username))
+		);
+		return alarmEntityRepository.findAllByUser(user, pageable).map(AlarmDto::fromEntity);
 	}
 }

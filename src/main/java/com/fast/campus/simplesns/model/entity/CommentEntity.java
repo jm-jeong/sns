@@ -3,7 +3,6 @@ package com.fast.campus.simplesns.model.entity;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -26,34 +24,26 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Entity
-@Table(name = "post")
-@SQLDelete(sql = "UPDATE post SET removed_at = NOW() WHERE id=?")
-@Where(clause = "removed_at is NULL")
 @NoArgsConstructor
-public class PostEntity {
-
+@Table(name = "comment")
+@SQLDelete(sql = "UPDATE comment SET removed_at = NOW() WHERE id=?")
+@Where(clause = "removed_at is NULL")
+@Entity
+public class CommentEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer id = null;
 
-	@Column(name = "title")
-	private String title;
-
-	@Column(name = "body", columnDefinition = "TEXT")
-	private String body;
+	@Column(name = "comment")
+	private String comment;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 
-	@OneToMany
+	@ManyToOne
 	@JoinColumn(name = "post_id")
-	private List<CommentEntity> comments;
-
-	@OneToMany
-	@JoinColumn(name = "post_id")
-	private List<LikeEntity> likes;
+	private PostEntity post;
 
 	@Column(name = "registered_at")
 	private LocalDateTime registeredAt;
@@ -63,6 +53,7 @@ public class PostEntity {
 
 	@Column(name = "removed_at")
 	private LocalDateTime removedAt;
+
 
 	@PrePersist
 	void registeredAt() {
@@ -74,10 +65,10 @@ public class PostEntity {
 		this.updatedAt = LocalDateTime.now();
 	}
 
-	public static PostEntity of(String title, String body, UserEntity user) {
-		PostEntity entity = new PostEntity();
-		entity.setTitle(title);
-		entity.setBody(body);
+	public static CommentEntity of(String comment, PostEntity post, UserEntity user) {
+		CommentEntity entity = new CommentEntity();
+		entity.setComment(comment);
+		entity.setPost(post);
 		entity.setUser(user);
 		return entity;
 	}

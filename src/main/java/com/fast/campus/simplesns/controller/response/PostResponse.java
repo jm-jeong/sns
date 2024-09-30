@@ -1,6 +1,8 @@
 package com.fast.campus.simplesns.controller.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fast.campus.simplesns.model.PostDto;
 
@@ -14,6 +16,8 @@ public class PostResponse {
 	private String title;
 	private String body;
 	private UserResponse userResponse;
+	private List<CommentResponse> comments;
+	private List<LikeResponse> likes;
 	private LocalDateTime registeredAt;
 	private LocalDateTime updatedAt;
 
@@ -23,6 +27,8 @@ public class PostResponse {
 			post.getTitle(),
 			post.getBody(),
 			UserResponse.fromUser(post.getUser()),
+			post.getComments().stream().map(CommentResponse::fromComment).collect(Collectors.toList()),
+			post.getLikes().stream().map(LikeResponse::fromLike).collect(Collectors.toList()),
 			post.getRegisteredAt(),
 			post.getUpdatedAt()
 		);
