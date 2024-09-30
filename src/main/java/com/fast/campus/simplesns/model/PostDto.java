@@ -21,10 +21,6 @@ public class PostDto {
 
 	private UserDto user;
 
-	private List<CommentDto> comments;
-
-	private List<LikeDto> likes;
-
 	private LocalDateTime registeredAt;
 
 	private LocalDateTime updatedAt;
@@ -37,8 +33,6 @@ public class PostDto {
 			entity.getTitle(),
 			entity.getBody(),
 			UserDto.fromEntity(entity.getUser()),
-			entity.getComments().stream().map(CommentDto::fromEntity).collect(Collectors.toList()),
-			entity.getLikes().stream().map(LikeDto::fromEntity).collect(Collectors.toList()),
 			entity.getRegisteredAt(),
 			entity.getUpdatedAt(),
 			entity.getRemovedAt()

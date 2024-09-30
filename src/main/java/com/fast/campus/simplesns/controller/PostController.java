@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fast.campus.simplesns.controller.request.PostCommentRequest;
 import com.fast.campus.simplesns.controller.request.PostWriteRequest;
+import com.fast.campus.simplesns.controller.response.CommentResponse;
 import com.fast.campus.simplesns.controller.response.PostResponse;
 import com.fast.campus.simplesns.controller.response.Response;
 import com.fast.campus.simplesns.service.PostService;
@@ -56,6 +57,16 @@ public class PostController {
 	public Response<Void> delete(@PathVariable Integer postId, Authentication authentication) {
 		postService.delete(authentication.getName(), postId);
 		return Response.success();
+	}
+
+	@GetMapping("/{postId}/comments")
+	public Response<Page<CommentResponse>> getComments(Pageable pageable, @PathVariable Integer postId) {
+		return Response.success(postService.getComments(postId, pageable).map(CommentResponse::fromComment));
+	}
+
+	@GetMapping("/{postId}/likes")
+	public Response<Integer> getLikes(@PathVariable Integer postId, Authentication authentication) {
+		return Response.success(postService.getLikeCount(postId));
 	}
 
 	@PostMapping("/{postId}/comments")

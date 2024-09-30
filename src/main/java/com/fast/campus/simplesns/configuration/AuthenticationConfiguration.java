@@ -25,7 +25,7 @@ public class AuthenticationConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("**.json", "/", "**.js", "**.html", "**.jpg", "**.png", "**/static/**");
+		web.ignoring().regexMatchers("^(?!/api/).*");
 	}
 
 	@Override
@@ -34,6 +34,7 @@ public class AuthenticationConfiguration extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/api/*/users/join", "/api/*/users/login").permitAll()
 			.antMatchers("/api/**").authenticated()
+			.anyRequest().permitAll()
 			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
