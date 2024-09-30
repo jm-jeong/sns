@@ -40,7 +40,7 @@ public class PostController {
 
 	@GetMapping("/my")
 	public Response<Page<PostResponse>> myPosts(Pageable pageable, Authentication authentication) {
-		return Response.success(postService.my(authentication.getName(), pageable).map(PostResponse::fromPostDto))
+		return Response.success(postService.my(authentication.getName(), pageable).map(PostResponse::fromPostDto));
 	}
 
 	@PutMapping("/{postId}")
