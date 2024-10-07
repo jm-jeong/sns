@@ -3,7 +3,6 @@ package com.fast.campus.simplesns.configuration;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -11,10 +10,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fast.campus.simplesns.model.UserDto;
 
-import io.lettuce.core.RedisURI;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -35,6 +34,14 @@ public class RedisConfig {
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
 		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(UserDto.class));
+		return redisTemplate;
+	}
+
+	@Bean
+	public RedisTemplate<String, SseEmitter> emitterRedisTemplate() {
+		RedisTemplate<String, SseEmitter> redisTemplate = new RedisTemplate<>();
+		redisTemplate.setConnectionFactory(redisConnectionFactory());
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<SseEmitter>(SseEmitter.class));
 		return redisTemplate;
 	}
 }

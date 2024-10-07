@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -24,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class UserDto implements UserDetails {
 
 	private Integer id;
-	private String userName;
+	private String username;
 	private String password;
 	private UserRole role;
 	private LocalDateTime registeredAt;
@@ -55,11 +54,6 @@ public class UserDto implements UserDetails {
 		return password;
 	}
 
-
-	@Override
-	public String getUsername() {
-		return userName;
-	}
 
 	@JsonIgnore
 	@Override

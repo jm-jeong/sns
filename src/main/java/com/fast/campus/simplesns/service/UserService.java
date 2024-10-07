@@ -15,8 +15,8 @@ import com.fast.campus.simplesns.model.AlarmDto;
 import com.fast.campus.simplesns.model.UserDto;
 import com.fast.campus.simplesns.model.entity.UserEntity;
 import com.fast.campus.simplesns.repository.AlarmEntityRepository;
+import com.fast.campus.simplesns.repository.UserCacheRepository;
 import com.fast.campus.simplesns.repository.UserEntityRepository;
-import com.fast.campus.simplesns.repository.infra.RedisRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +27,7 @@ public class UserService {
 	private final UserEntityRepository userEntityRepository;
 	private final AlarmEntityRepository alarmEntityRepository;
 	private final BCryptPasswordEncoder encoder;
-	private final RedisRepository redisRepository;
+	private final UserCacheRepository redisRepository;
 
 	@Value("${jwt.secret-key}")
 	private String secretKey;

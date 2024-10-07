@@ -37,6 +37,7 @@ public class PostService {
 	private final CommentEntityRepository commentEntityRepository;
 	private final LikeEntityRepository likeEntityRepository;
 	private final AlarmEntityRepository alarmEntityRepository;
+	private final AlarmService notificationService;
 
 	@Transactional
 	public void create(String userName, String title, String body) {
@@ -96,9 +97,7 @@ public class PostService {
 
 		commentEntityRepository.save(CommentEntity.of(comment, postEntity, userEntity));
 
-		alarmEntityRepository.save(
-			AlarmEntity.of(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postId),
-				postEntity.getUser()));
+		notificationService.send(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(userEntity.getId(), postId), postEntity.getUser());
 
 	}
 
@@ -121,7 +120,8 @@ public class PostService {
 
 		likeEntityRepository.save(LikeEntity.of(postEntity, userEntity));
 
-		alarmEntityRepository.save(AlarmEntity.of(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postId), postEntity.getUser()));
+		// create alarm
+		notificationService.send(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postId), postEntity.getUser());
 	}
 
 	public Integer getLikeCount(Integer postId) {
