@@ -9,12 +9,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fast.campus.simplesns.model.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto implements UserDetails {
 
 	private Integer id;
@@ -37,37 +43,43 @@ public class UserDto implements UserDetails {
 		);
 	}
 
-
+	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(role.name()));
 	}
 
+	@JsonIgnore
 	@Override
 	public String getPassword() {
 		return password;
 	}
+
 
 	@Override
 	public String getUsername() {
 		return userName;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonExpired() {
 		return removedAt == null;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonLocked() {
 		return removedAt == null;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return removedAt == null;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEnabled() {
 		return removedAt == null;

@@ -2,18 +2,24 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 4
-    url: jdbc:mysql://fnx6frzmhxw45qcb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com/tfuucyqb781hib04
-    username: ykkaxkop9z0ea2q6
-    password: lgdy26e415wo1kxk
+    url: jdbc:mysql://localhost:3306/simple_sns
+    username: root
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 spring.jpa:
-  hibernate.ddl-auto: update
+  hibernate.ddl-auto: create
   properties.hibernate.format_sql: true
   show-sql: true
   properties:
     hibernate:
       dialect: org.hibernate.dialect.MySQL8Dialect
+
+spring.redis:
+  port: 6379
+  host: localhost
+  password:
+  url:
 
 jwt:
   secret-key: fast-campus.simple_sns_2022_secret_key

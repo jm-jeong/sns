@@ -3,7 +3,6 @@ package com.fast.campus.simplesns.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import com.fast.campus.simplesns.model.UserDto;
 import com.fast.campus.simplesns.model.entity.UserEntity;
 import com.fast.campus.simplesns.repository.AlarmEntityRepository;
 import com.fast.campus.simplesns.repository.UserEntityRepository;
+import com.fast.campus.simplesns.repository.infra.RedisRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +27,7 @@ public class UserService {
 	private final UserEntityRepository userEntityRepository;
 	private final AlarmEntityRepository alarmEntityRepository;
 	private final BCryptPasswordEncoder encoder;
+	private final RedisRepository redisRepository;
 
 	@Value("${jwt.secret-key}")
 	private String secretKey;
@@ -35,13 +36,17 @@ public class UserService {
 	private Long expiredTimeMs;
 
 	public UserDto loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userEntityRepository.findByUserName(username).map(UserDto::fromEntity).orElseThrow(
-			() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", username))
+		return redisRepository.getUser(username).orElseGet(
+			() -> userEntityRepository.findByUserName(username).map(UserDto::fromEntity).orElseThrow(
+				() -> new SimpleSnsApplicationException(ErrorCode.USER_NOT_FOUND,
+					String.format("userName is %s", username))
+			)
 		);
 	}
 
 	public String login(String username, String password) {
 		UserDto savedUser = loadUserByUsername(username);
+		redisRepository.setUser(savedUser);
 		if (!encoder.matches(password, savedUser.getPassword())) {
 			throw new SimpleSnsApplicationException(ErrorCode.INVALID_PASSWORD);
 		}
